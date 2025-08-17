@@ -24,6 +24,3 @@ def cerrar_sesion(request):
     logout(request)
     return redirect("home")
 
-
-def main(request):
-    return render(request, "main.html")
