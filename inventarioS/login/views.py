@@ -13,7 +13,7 @@ def inicio_sesion(request):
 
         if user is not None:
             login(request, user)
-            return redirect("main")
+            return redirect("novedades")
         else:
             messages.error(request, "Usuario o contraseña incorrectos")
 

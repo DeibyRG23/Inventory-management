@@ -1,0 +1,18 @@
+{% extends 'baseinventario.html' %}
+{% block content %}
+<div class="container text-center mt-4 " style="font-family: 'Handlee', cursive;">
+    <div class="row">
+        <div class="col-12 col-md-3 mb-3">
+            <a href="{% url 'agregar_inventario'%}" class="btn btn-success ">Agregar al inventario</a>
+        </div>
+        <div class="col-12 col-md-3 mb-3">
+            <a href="{% url 'agregar_elemento' %}" class="btn btn-success">Agregar tipo de elemento</a>
+        </div>
+        <div class="col-12 col-md-3 mb-3">
+            <a href="{% url 'agregar_unidad' %}" class="btn btn-success">Agregar tipo de unidad</a>
+        </div>
+    </div>
+</div>
+     
+
+{% endblock %}

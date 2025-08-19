@@ -1,0 +1,58 @@
+{% extends 'baseinventario.html' %}
+{% block content %}
+<div class="container-fluid custom-width bg-secondary text-light p-4 mt-4">
+    <form method="post">
+        {% csrf_token %}
+        <h3 class="text-center">Formulario para un Tipo de unidad de medida: </h3>
+        <div class="row">
+            <div class="col">
+                <label>Descripción del tipo de unidad:</label>
+                <input type="text" name="unidad" class="form-control"
+                    placeholder="Escriba la unidad de medida. Ejem: galones, metros, etc..." required>
+            </div>
+        </div>
+
+        <div class="text-center">
+            <a href="{% url 'inventario' %}" class="btn btn-danger mt-4 me-2">Cancelar</a>
+            <button class="btn btn-success mt-4" type="submit">Agregar</button>
+        </div>
+
+    </form>
+</div>
+
+{% if messages %}
+<div class="modal fade" id="mensajeModal" tabindex="-1" aria-labelledby="mensajeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-light text-center text-dark">
+            <div class="modal-header">
+                <h5 class="modal-title" id="mensajeModalLabel">Operación exitosa <i
+                        class="bi bi-emoji-laughing-fill text-warning mx-2"></i><i
+                        class="bi bi-check-square-fill text-success"></i></h5>
+            </div>
+            <div class="modal-body">
+                {% for message in messages %}
+                <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<script>
+    // Mostrar el modal automáticamente
+    const modal = new bootstrap.Modal(document.getElementById('mensajeModal'));
+    modal.show();
+
+    // Redirigir cuando se cierre
+    document.getElementById('mensajeModal').addEventListener('hidden.bs.modal', function () {
+        window.location.href = "/inventario/inventario";  // Cambia por tu URL deseada
+    });
+</script>
+</div>
+</div>
+</div>
+{% endblock %}
