@@ -10,13 +10,34 @@ def novedades(request):
 
 
 @login_required
-def inventario(request):
-    return render(request, "inventario/inventario.html")
+def inventarioTotal(request):
+    elementos=inventario.objects.all()
+    return render(request, "inventario/inventario.html",{"elementos":elementos})
 
 @login_required
 def agregarinventario(request):
     elementos=tipoElemento.objects.all()
     unidades=tipoUnidad.objects.all()
+    if request.method=="POST":
+        elementotipo=request.POST.get("elementotipo")
+        elemento=request.POST.get("elemento")
+        cantidad=request.POST.get("cantidad")
+        tipo=request.POST.get("tipo")
+        marca=request.POST.get("marca")
+        observacion=request.POST.get("observacion")
+
+        elementoInventario=inventario(
+            tipo=tipoElemento.objects.get(id=elementotipo),
+            elemento=elemento,
+            cantidad=cantidad,
+            unidad=tipoUnidad.objects.get(id=tipo),
+            marca=marca,
+            observaciones=observacion
+        )
+
+        elementoInventario.save()
+        messages.success(request,"Elemento agregado correctamente al inventario")
+        return redirect("inventario")
     return render(request, "inventario/forminventario.html",{"elementos":elementos,"unidades":unidades})
 
 @login_required
