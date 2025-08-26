@@ -1,4 +1,68 @@
 {% extends 'baseinventario.html' %}
 {% block content %}
-<h1>Necesario</h1>
+<div class="container text-center mt-4 " style="font-family: 'Handlee', cursive;">
+    <div class="row">
+        <div class="col">
+            <a href="{% url 'agregar_cantidadxrestauracion' %}" class="btn btn-success ">Agregar cantidad necesaria por restauración</a>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid custom-width bg-secondary text-light p-4 mt-4">
+    <form method="POST">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col">
+                <label>Filtrar por tipo de activo:</label>
+                <select class="form-select" name="id" {%if not activos %}disabled{%endif%} required>
+                    <option>Selecciona el tipo de activo</option>
+                    {%for activo in activos%}
+                    <option value="{{activo.id}}">{{activo.descripcion}}</option>
+                    {%endfor%}
+                </select>
+                <button type="submit" class="btn btn-info mt-2">Buscar</button>
+                <a href="#" class="btn btn-danger mt-2 ms-2">Cancelar</a>
+            </div>
+        </div>
+
+    </form>
+</div>
+{% if cantidad %}
+<div class="container mt-4">
+    <div class="table-resposive">
+        <table class="table table-sm table-bordered table-striped table-hover caption-top">
+            <caption>Lista de activos de TI registrados en el sistema</caption>
+            <thead class="table-primary">
+                <tr>
+                    <th>Elemento</th>
+                    <th>Cantidad necesaria por restauración</th>
+                    <th>¿Disponible?</th>
+                    <th>¿Cuantas reparaciones se pueden realizar?</th>
+                </tr>
+            </thead>
+            <tbody class="table-secondary">
+                {% for cant in cantidad%}
+                <tr>
+                    <td>{{cant.material.elemento}}</td>
+                    <td>{{cant.necesario}}</td>
+                    {% if cant.disponible %}
+                    <td>Disponible</td>
+                    {% else %}
+                    <td>No disponible</td>
+                    {% endif %}
+                    <td>{{cant.restauraciones}}</td>
+    
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% else %}
+<div class="text-light">
+    <h3>No existen elementos registrados al sistema por favor ingrese alguno</h3>
+</div>
+{% endif %}
+
+
 {% endblock %}

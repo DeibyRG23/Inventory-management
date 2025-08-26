@@ -9,4 +9,5 @@ urlpatterns = [
     path("inventario/agregar_inventario", agregarinventario, name="agregar_inventario"),
     path("bitacora", bitacora, name="bitacora"),
     path("cantidadxrestauracion", cantidadxrestauracion, name="cantidadxrestauracion"),
+    path("cantidadxrestauracion/agregar", agregar_cantxrest, name="agregar_cantidadxrestauracion"),
 ]

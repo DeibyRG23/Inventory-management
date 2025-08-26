@@ -64,8 +64,31 @@ def agregarunidad(request):
 
 @login_required
 def cantidadxrestauracion(request):
-    return render(request, "cantidadxrestauracion/cantidadxrestauracion.html")
+    cantidad=cantidad_x_restauracion.objects.all()
+    return render(request, "cantidadxrestauracion/cantidadxrestauracion.html",{"cantidad":cantidad})
 
+def agregar_cantxrest(request):
+    cantidad=cantidad_x_restauracion.objects.all()
+    total = inventario.objects.exclude(id__in=cantidad.values_list('id', flat=True))
+    if request.method == "POST":
+        elemento = request.POST.get("elemento")
+        unidad = request.POST.get("cantidad")
+        pieza=inventario.objects.get(id=elemento)
+        restauracion=pieza.cantidad/int(unidad)
+        if restauracion >= 1:
+            disponible=True
+        else: 
+            disponible=False
+        mantenimiento=cantidad_x_restauracion(
+            material=inventario.objects.get(id=elemento),
+            necesario=unidad,
+            restauraciones=restauracion,
+            disponible=disponible
+        )
+        mantenimiento.save()
+        messages.success(request, "Elemento guardado exitosamente.")
+        return redirect("cantidadxrestauracion")
+    return render(request, "cantidadxrestauracion/formcantxrest.html",{"total":total,"cantidad":cantidad})
 
 @login_required
 def bitacora(request):

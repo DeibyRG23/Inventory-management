@@ -14,3 +14,9 @@ class inventario(models.Model):
     unidad=models.ForeignKey(tipoUnidad,on_delete=models.CASCADE)
     marca=models.CharField(blank=True,max_length=50)
     observaciones=models.CharField(blank=True,max_length=500)
+
+class cantidad_x_restauracion(models.Model):
+    material=models.ForeignKey(inventario,on_delete=models.CASCADE)
+    necesario=models.IntegerField()
+    restauraciones=models.IntegerField()
+    disponible=models.BooleanField()
