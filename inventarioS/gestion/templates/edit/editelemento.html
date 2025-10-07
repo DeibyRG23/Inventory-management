@@ -3,61 +3,56 @@
 <div class="container-fluid custom-width bg-secondary text-light p-4 mt-4">
     <form method="post">
         {% csrf_token %}
-        <h3 class="text-center">Formulario para Agregar un elemento al inventario: </h3>
+        <h3 class="text-center">Formulario para Editar un elemento al inventario: </h3>
         <div class="row">
             <div class="col">
                 <label>Tipo:</label>
-                <select class="form-select" name="elementotipo" {%if not elementos %}disabled{%endif%} required>
-                    <option>Selecciona algún tipo</option>
-                    {%for elemento in elementos%}
-                    <option value="{{elemento.id}}">{{elemento.descripcion}}</option>
-                    {%endfor%}
+                <select class="form-select" name="elementotipo" disabled required>
+                    <option >{{elemento.tipo.descripcion}}</option>
                 </select>
             </div>
             <div class="col">
                 <label>Nombre del elemento:</label>
-                <input type="text" name="elemento" class="form-control" placeholder="Escriba el nombre del elemento">
+                <input type="text" name="elemento" class="form-control" value="{{elemento.elemento}}" placeholder="Escriba el nombre del elemento">
             </div>
         </div>
 
         <div class="row">
             <div class="col">
                 <label>Cantidad :</label>
-                <input type="number" step="any" name="cantidad" class="form-control">
+                <input type="number" step="any" name="cantidad" value="{{elemento.cantidad}}" class="form-control">
             </div>
             <div class="col">
                 <label>Unidad de medida:</label>
-                <select class="form-select" name="tipo" {%if not unidades %}disabled{%endif%} required>
-                    <option>Selecciona algún tipo de unidad de medida</option>
-                    {%for unidad in unidades%}
-                    <option value="{{unidad.id}}">{{unidad.descripcion}}</option>
-                    {%endfor%}
+                <select class="form-select" name="tipo" disabled required>
+                    <option>{{elemento.unidad.descripcion}}</option>
                 </select>
             </div>
         </div>
 
         <div class="row">
             <div class="col">
-                <label >Marca del elemento: </label>
-                <input type="text" name="marca" class="form-control">
+                <label>Marca del elemento: </label>
+                <input type="text" name="marca" value="{{elemento.marca}}" class="form-control">
             </div>
         </div>
-        
+
         <div class="row">
             <div class="col">
                 <div class="mb-3">
                     <label for="exampleFormControlTextarea1" class="form-label">Observaciones:</label>
-                    <textarea class="form-control" placeholder="Escriba brevemente algún hallazgo sobre el elemento si lo hay..."
-                        id="exampleFormControlTextarea1" rows="3" name="observacion"></textarea>
+                    <textarea class="form-control"
+                        placeholder="Escriba brevemente algún hallazgo sobre el elemento si lo hay..."
+                        id="exampleFormControlTextarea1" rows="3" name="observacion">{{elemento.observaciones}}</textarea>
                 </div>
             </div>
         </div>
-        
-        
+
+
 
         <div class="text-center">
             <a href="{% url 'inventario' %}" class="btn btn-danger mt-4 me-2">Cancelar <i class="bi bi-x-octagon ms-1"></i></a>
-            <button class="btn btn-success mt-4" type="submit">Agregar <i class="bi bi-plus-square-fill ms-1"></i></button>
+            <button class="btn btn-success mt-4" type="submit">Editar <i class="bi bi-pencil-square me-1"></i></button>
         </div>
 
     </form>

@@ -3,18 +3,23 @@
 <div class="container-fluid custom-width bg-secondary text-light p-4 mt-4">
     <form method="post">
         {% csrf_token %}
-        <h3 class="text-center">Formulario para un Tipo de unidad de medida: </h3>
+        <h3 class="text-center">Formulario para Editar un elemento a Cantidad por restauración: </h3>
         <div class="row">
             <div class="col">
-                <label>Descripción del tipo de unidad:</label>
-                <input type="text" name="unidad" class="form-control"
-                    placeholder="Escriba la unidad de medida. Ejem: galones, metros, etc..." required>
+                <label>Elemento del inventario:</label>
+                <select class="form-select" name="elemento" disabled required>
+                    <option>{{cantidad_id.material.elemento}}</option>
+                </select>
+            </div>
+            <div class="col">
+                <label>Cantidad necesaria por Molino :</label>
+                <input type="number" step="any" name="cantidad" value="{{cantidad_id.necesario}}" class="form-control">
             </div>
         </div>
 
         <div class="text-center">
-            <a href="{% url 'inventario' %}" class="btn btn-danger mt-4 me-2">Cancelar <i class="bi bi-x-octagon ms-1"></i></a>
-            <button class="btn btn-success mt-4" type="submit">Agregar <i class="bi bi-plus-square-fill ms-1"></i></button>
+            <a href="{% url 'cantidadxrestauracion' %}" class="btn btn-danger mt-4 me-2">Cancelar <i class="bi bi-x-octagon ms-1"></i></a>
+            <button class="btn btn-success mt-4" type="submit">Editar <i class="bi bi-pencil-square me-1"></i></button>
         </div>
 
     </form>
@@ -49,7 +54,7 @@
 
     // Redirigir cuando se cierre
     document.getElementById('mensajeModal').addEventListener('hidden.bs.modal', function () {
-        window.location.href = "/inventario/inventario";  // Cambia por tu URL deseada
+        window.location.href = "/inventario/cantidadxrestauracion";  // Cambia por tu URL deseada
     });
 </script>
 </div>

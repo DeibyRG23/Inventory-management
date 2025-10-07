@@ -3,31 +3,31 @@
 <div class="container text-center mt-4 " style="font-family: 'Handlee', cursive;">
     <div class="row">
         <div class="col-12 col-md-3 mb-3">
-            <a href="{% url 'agregar_inventario'%}" class="btn btn-success ">Agregar al inventario</a>
+            <a href="{% url 'agregar_inventario'%}" class="btn btn-success ">Agregar al inventario<i class="bi bi-plus-square-fill ms-1"></i></a>
         </div>
         <div class="col-12 col-md-3 mb-3">
-            <a href="{% url 'agregar_elemento' %}" class="btn btn-success">Agregar tipo de elemento</a>
+            <a href="{% url 'agregar_elemento' %}" class="btn btn-success">Agregar tipo de elemento<i class="bi bi-plus-square-fill ms-1"></i></a>
         </div>
         <div class="col-12 col-md-3 mb-3">
-            <a href="{% url 'agregar_unidad' %}" class="btn btn-success">Agregar tipo de unidad</a>
+            <a href="{% url 'agregar_unidad' %}" class="btn btn-success">Agregar tipo de unidad<i class="bi bi-plus-square-fill ms-1"></i></a>
         </div>
     </div>
 </div>
 
 <div class="container-fluid custom-width bg-secondary text-light p-4 mt-4">
-    <form method="POST">
+    <form method="POST" action="{%url 'dato' %}">
         {% csrf_token %}
         <div class="row">
             <div class="col">
-                <label>Filtrar por tipo de activo:</label>
-                <select class="form-select" name="id" {%if not activos %}disabled{%endif%} required>
-                    <option>Selecciona el tipo de activo</option>
-                    {%for activo in activos%}
-                    <option value="{{activo.id}}">{{activo.descripcion}}</option>
+                <label><i class="bi bi-funnel me-1"></i> Filtrar por tipo de elemento:</label>
+                <select class="form-select" name="id" {%if not items %}disabled{%endif%} required>
+                    <option value="0">Selecciona el tipo de elemento</option>
+                    {%for item in items%}
+                    <option value="{{item.id}}">{{item.descripcion}}</option>
                     {%endfor%}
                 </select>
-                <button type="submit" class="btn btn-info mt-2">Buscar</button>
-                <a href="#" class="btn btn-danger mt-2 ms-2">Cancelar</a>
+                <button type="submit" class="btn btn-info mt-2">Buscar <i class="bi bi-search ms-1"></i></button>
+                <a href="{% url 'inventario' %}" class="btn btn-danger mt-2 ms-2">Cancelar <i class="bi bi-x-octagon ms-1"></i></a>
             </div>
         </div>
 
@@ -35,6 +35,7 @@
 </div>
 {% if elementos %}
 <div class="container mt-4">
+    <a href="{% url 'exportar_inventario' %}" class="btn btn-danger mt-2 ms-2"><i class="bi bi-file-earmark-spreadsheet me-1"></i>Exportar inventario a excel</a>
     <div class="table-resposive">
         <table class="table table-sm table-bordered table-striped table-hover caption-top">
             <caption>Lista de activos de TI registrados en el sistema</caption>
@@ -46,6 +47,8 @@
                     <th>Unidad</th>
                     <th>Marca</th>
                     <th>Observaciones</th>
+                    <th>Editar</th>
+                    <th>Eliminar</th>
                 </tr>
             </thead>
             <tbody class="table-secondary">
@@ -57,6 +60,8 @@
                     <td>{{elemento.unidad.descripcion}}</td>
                     <td>{{elemento.marca}}</td>
                     <td>{{elemento.observaciones}}</td>
+                    <td class="text-center"><a href="inventario/editaritem/{{elemento.id}}"><i class="bi bi-pencil-square"></i></a></td>
+                    <td class="text-center"><a href="inventario/eliminaritem/{{elemento.id}}"><i class="bi bi-trash3 text-danger"></i></a></td>
                 </tr>
                 {% endfor %}
             </tbody>

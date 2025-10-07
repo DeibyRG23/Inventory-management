@@ -1,4 +1,92 @@
 {% extends 'baseinventario.html' %}
 {% block content %}
-<h1>Bitacora</h1>
+<div class="container text-center mt-4 " style="font-family: 'Handlee', cursive;">
+    <div class="row">
+        <div class="col-12 col-md-3 mb-3">
+            <a href="{% url 'ingresos'%}" class="btn btn-success ">Reporte de ingresos <i class="bi bi-file-earmark-plus me-1"></i></a>
+        </div>
+        <div class="col-12 col-md-3 mb-3">
+            <a href="{% url 'salidas' %}" class="btn btn-success">Reporte de salidas <i class="bi bi-file-earmark-minus me-1"></i></a>
+        </div>
+        <div class="col-12 col-md-3 mb-3">
+            <a href="{% url 'pazysalvo' %}" class="btn btn-success">Paz y salvos <i class="bi bi-file-earmark-check me-1"></i></a>
+
+        </div>
+        <div class="col-12 col-md-3 mb-3">
+            <a href="{% url 'falla' %}" class="btn btn-success">Reporte de daños <i class="bi bi-file-earmark-x me-1"></i></a>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid custom-width bg-secondary text-light p-4 mt-4">
+    <form method="get">
+        <div class="row">
+            <div class="col">
+                    <label for="fecha" > <i class="bi bi-funnel me-1"></i>Filtrar por Fecha</label>
+                    <input type="date" name="fecha" id="fecha" class="form-control" value="{{ request.GET.fecha }}">
+            </div>
+            <div class="col">
+                <label><i class="bi bi-funnel me-1"></i>Filtrar por tipo de acción:</label>
+                    <select name="tipo" id="tipo" class="form-select">
+                        <option value="">Selecciona</option>
+                        <option value="Ingreso" {% if request.GET.tipo == 'ingreso' %}selected{% endif %}>Ingreso</option>
+                        <option value="Salida" {% if request.GET.tipo == 'salida' %}selected{% endif %}>Salida</option>
+                        <option value="Paz y Salvo" {% if request.GET.tipo == 'paz y salvo' %}selected{% endif %}>Paz y Salvo</option>
+                        <option value="Falla" {% if request.GET.tipo == 'falla' %}selected{% endif %}>Falla</option>
+                    </select>
+            </div>
+            <div class="col">
+                    <label for="nombre"><i class="bi bi-funnel me-1"></i>Filtrar por responsable</label>
+                    <input type="text" name="nombre" id="nombre" class="form-control" placeholder="Buscar por responsable"
+                        value="{{ request.GET.nombre }}">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <button type="submit" class="btn btn-info mt-2">Buscar <i class="bi bi-search ms-1"></i></button>
+                <a href="{% url 'bitacora' %}" class="btn btn-danger mt-2 ms-2">Cancelar <i class="bi bi-x-octagon ms-1"></i></a>
+            </div>
+        </div>
+
+    </form>
+</div>
+{% if lista %}
+<div class="container mt-4">
+    <a href="{% url 'exportar_bitacora' %}" class="btn btn-danger mt-2 ms-2"><i class="bi bi-file-earmark-spreadsheet me-1"></i> Exportar datos a excel</a>
+    <div class="table-resposive">
+        <table class="table table-sm table-bordered table-striped table-hover caption-top">
+            <caption>Lista de entrega y consumidos de inventario</caption>
+            <thead class="table-primary">
+                <tr>
+                    <th>Fecha</th>
+                    <th>Tipo de acción</th>
+                    <th>Elemento</th>
+                    <th>Cantidad</th>
+                    <th>Observaciones</th>
+                    <th>Responsable</th>
+                    <th>Eliminar</th>
+                </tr>
+            </thead>
+            <tbody class="table-secondary">
+                {% for elemento in lista%}
+                <tr>
+                    <td>{{elemento.lista.fecha}}</td>
+                    <td>{{elemento.lista.tipo_ingreso}}</td>
+                    <td>{{elemento.elemento.elemento}}</td>
+                    <td>{{elemento.cantidad}}</td>
+                    <td>{{elemento.lista.observaciones}}</td>
+                    <td>{{elemento.lista.responsable}}</td>
+                    <td class="text-center"><a href="bitacora/eliminar/{{elemento.id}}"><i class="bi bi-trash3 text-danger"></i></a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% else %}
+<div class="text-light">
+    <h3>No existen equipos registrados al sistema por favor ingrese alguno</h3>
+</div>
+{% endif %}
+
 {% endblock %}

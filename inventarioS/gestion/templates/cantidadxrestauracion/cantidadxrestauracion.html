@@ -3,25 +3,24 @@
 <div class="container text-center mt-4 " style="font-family: 'Handlee', cursive;">
     <div class="row">
         <div class="col">
-            <a href="{% url 'agregar_cantidadxrestauracion' %}" class="btn btn-success ">Agregar cantidad necesaria por restauración</a>
+            <a href="{% url 'agregar_cantidadxrestauracion' %}" class="btn btn-success ">Agregar cantidad necesaria por restauración <i class="bi bi-plus-square-fill me-1"></i></a>
         </div>
     </div>
 </div>
 
 <div class="container-fluid custom-width bg-secondary text-light p-4 mt-4">
-    <form method="POST">
+    <form method="POST" action="{% url 'dato_disponible' %}">
         {% csrf_token %}
         <div class="row">
             <div class="col">
-                <label>Filtrar por tipo de activo:</label>
-                <select class="form-select" name="id" {%if not activos %}disabled{%endif%} required>
-                    <option>Selecciona el tipo de activo</option>
-                    {%for activo in activos%}
-                    <option value="{{activo.id}}">{{activo.descripcion}}</option>
-                    {%endfor%}
+                <label><i class="bi bi-funnel me-1"></i> Filtrar por disponibilidad:</label>
+                <select class="form-select" name="disponible" required>
+                    <option value="">Selecciona</option>
+                    <option value="0">No disponible</option>
+                    <option value="1">Disponible</option>
                 </select>
-                <button type="submit" class="btn btn-info mt-2">Buscar</button>
-                <a href="#" class="btn btn-danger mt-2 ms-2">Cancelar</a>
+                <button type="submit" class="btn btn-info mt-2">Buscar <i class="bi bi-search ms-1"></i></button>
+                <a href="{% url 'cantidadxrestauracion' %}" class="btn btn-danger mt-2 ms-2">Cancelar<i class="bi bi-x-octagon ms-1"></i></a>
             </div>
         </div>
 
@@ -38,6 +37,8 @@
                     <th>Cantidad necesaria por restauración</th>
                     <th>¿Disponible?</th>
                     <th>¿Cuantas reparaciones se pueden realizar?</th>
+                    <th>Editar</th>
+                    <th>Eliminar</th>
                 </tr>
             </thead>
             <tbody class="table-secondary">
@@ -51,7 +52,8 @@
                     <td>No disponible</td>
                     {% endif %}
                     <td>{{cant.restauraciones}}</td>
-    
+                    <td class="text-center"><a  href="cantidadxrestauracion/editar/{{cant.id}}"><i class="bi bi-pencil-square"></i></a></td>
+                    <td class="text-center"><a href="cantidadxrestauracion/eliminar/{{cant.id}}"><i class="bi bi-trash3 text-danger"></i></a></td>
                 </tr>
                 {% endfor %}
             </tbody>

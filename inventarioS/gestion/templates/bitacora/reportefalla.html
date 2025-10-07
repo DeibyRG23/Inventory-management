@@ -1,0 +1,165 @@
+{% extends 'baseinventario.html' %}
+{% block content %}
+<div class="container-fluid custom-width bg-secondary text-light p-4 mt-4">
+    <form method="post">
+        {% csrf_token %}
+        <h3 class="text-center">Formulario para reportar daños de herramienta al inventario: </h3>
+        <div class="container mt-4">
+
+            <div class="row mb-3">
+                <!-- Select de productos -->
+                <div class="col-md-4" id="selectProductoDiv">
+                    <select id="producto" class="form-select">
+                        <option value="">Seleccione un producto</option>
+                        {% for elemento in elementos %}
+                        <option value="{{elemento.id }}">{{ elemento.elemento }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+
+                <!-- Cantidad -->
+                <div class="col-md-2">
+                    <input id="cantidad" type="number" class="form-control" placeholder="Cantidad">
+                </div>
+
+            </div>
+
+            <button class="btn btn-primary mb-3" type="button" onclick="agregarItem()">Agregar a la lista <i class="bi bi-plus-square-fill me-1"></i></button>
+
+            <table class="table table-striped" id="tablaItems">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <label>Responsable: </label>
+                <input type="text" name="responsable" class="form-control" id="responsable">
+            </div>
+            <div class="col">
+                <label>Fecha</label>
+                <input type="date" class="form-control" id="fecha">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <div class="mb-3">
+                    <label for="exampleFormControlTextarea1" class="form-label">Observaciones:</label>
+                    <textarea class="form-control"
+                        placeholder="Escriba brevemente algún hallazgo sobre el elemento si lo hay..."
+                        id="observaciones" rows="3" name="observacion"></textarea>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="text-center">
+            <a href="{% url 'bitacora' %}" class="btn btn-danger mt-4 me-2">Cancelar <i class="bi bi-x-octagon me-1"></i></a>
+            <button class="btn btn-success mt-4" type="button" onclick="enviar()">Agregar <i class="bi bi-plus-square-fill me-1"></i></button>
+        </div>
+
+    </form>
+
+
+    <script>
+        let items = [];
+
+        function agregarItem() {
+            let productoSelect = document.getElementById("producto");
+            let productoId = productoSelect.value;
+            let productoNombre = productoSelect.options[productoSelect.selectedIndex]?.text;
+            let cantidad = document.getElementById("cantidad").value;
+
+            if ((!productoId) || !cantidad) {
+                alert("Debe seleccionar o escribir un producto y agregar cantidad");
+                return;
+            }
+
+            let item;
+            item = { producto_id: productoId, nombre: productoNombre, cantidad: cantidad };
+
+
+            items.push(item);
+            mostrarTabla();
+
+            // Resetear campos y volver a mostrar el select
+            productoSelect.value = "";
+            document.getElementById("cantidad").value = "";
+
+        }
+
+        function mostrarTabla() {
+            let tbody = document.querySelector("#tablaItems tbody");
+            tbody.innerHTML = "";
+
+            items.forEach((item, index) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${item.nombre}</td>
+                        <td>${item.cantidad}</td>
+                        <td><button class="btn btn-danger btn-sm" onclick="eliminarItem(${index})">Eliminar</button></td>
+                    </tr>
+                `;
+            });
+        }
+
+        function eliminarItem(index) {
+            items.splice(index, 1);
+            mostrarTabla();
+        }
+
+        function enviar() {
+            let responsable = document.getElementById("responsable").value;
+            let fecha = document.getElementById("fecha").value;
+            let observaciones = document.getElementById("observaciones").value;
+
+            if (!responsable || !fecha) {
+                alert("Debe llenar al menos Responsable y Fecha");
+                return;
+            }
+
+            const urlGuardar = "{% url  'guardar_falla' %}"
+            const urlRedirigir="{% url 'bitacora' %}"
+            fetch(urlGuardar, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}"
+                },
+                body: JSON.stringify({
+                    responsable: responsable,
+                    fecha: fecha,
+                    observaciones: observaciones,
+                    items: items
+                })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    alert(data.mensaje);
+                    items = [];
+                    mostrarTabla();
+                    window.location.href = urlRedirigir;
+                })
+                .catch(err => console.error(err));
+        }
+    </script>
+
+
+</div>
+
+
+</div>
+</div>
+</div>
+{% endblock %}

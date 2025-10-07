@@ -20,3 +20,20 @@ class cantidad_x_restauracion(models.Model):
     necesario=models.IntegerField()
     restauraciones=models.IntegerField()
     disponible=models.BooleanField()
+
+class bitacora_inventario(models.Model):
+    responsable=models.CharField(max_length=80)
+    fecha=models.DateField()
+    observaciones=models.CharField(max_length=500)
+    tipo_ingreso=models.CharField(max_length=80,blank=True)
+
+class elementos_x_bitacora(models.Model):
+    lista=models.ForeignKey(bitacora_inventario,on_delete=models.CASCADE)
+    elemento=models.ForeignKey(inventario,on_delete=models.CASCADE)
+    cantidad=models.IntegerField()
+
+class responsable_alamacen(models.Model):
+    nombre_responsable=models.CharField(max_length=100)
+    cargo=models.CharField(max_length=50)
+    contacto=models.CharField(max_length=50)
+    fecha=models.DateField(auto_now_add=True,null=True)
