@@ -1,11 +1,14 @@
 from django.shortcuts import render,redirect,HttpResponse
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required,user_passes_test
 from gestion.models import *
 from django.contrib import messages
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 from openpyxl import Workbook
+
+def is_staff(user):
+    return user.is_authenticated and user.is_staff
 
 # Create your views here.
 @login_required
@@ -43,6 +46,7 @@ def inventarioTotal(request):
     return render(request, "inventario/inventario.html",{"elementos":elementos,"items":items})
 
 @login_required
+@user_passes_test(is_staff)
 def agregarinventario(request):
     elementos=tipoElemento.objects.all()
     unidades=tipoUnidad.objects.all()
@@ -67,7 +71,9 @@ def agregarinventario(request):
         messages.success(request,"Elemento agregado correctamente al inventario")
     return render(request, "inventario/forminventario.html",{"elementos":elementos,"unidades":unidades})
 
+
 @login_required
+@user_passes_test(is_staff)
 def editarinventario(request,id):
     elemento=inventario.objects.get(id=id)
     if request.method == "POST":
@@ -86,14 +92,18 @@ def editarinventario(request,id):
 
     return render(request,"edit/editelemento.html",{"elemento":elemento})
 
+
 @login_required
+@user_passes_test(is_staff)
 def eliminarinventario(request,id):
     elemento=inventario.objects.filter(id=id)
     elemento.delete()
     messages.success(request,"Elemento eliminado satisfactoriamente.")
     return redirect("inventario")
 
+
 @login_required
+@user_passes_test(is_staff)
 def agregarelemento(request):
     if request.method=="POST":
         tipo=request.POST.get("tipoelemento")
@@ -104,6 +114,7 @@ def agregarelemento(request):
 
 
 @login_required
+@user_passes_test(is_staff)
 def agregarunidad(request):
     if request.method == "POST":
         unidad = request.POST.get("unidad")
@@ -112,7 +123,9 @@ def agregarunidad(request):
         messages.success(request, "Unidad de medida guardada exitosamente.")
     return render(request, "inventario/formunidad.html")
 
+
 @login_required
+@user_passes_test(is_staff)
 def tipo_elemento(request):
     if request.method == "POST":
         id=request.POST.get("id")
@@ -138,6 +151,9 @@ def cantidadxrestauracion(request):
         elemento.save()
     return render(request, "cantidadxrestauracion/cantidadxrestauracion.html",{"cantidad":cantidad})
 
+
+@login_required
+@user_passes_test(is_staff)
 def agregar_cantxrest(request):
     cantidad=cantidad_x_restauracion.objects.all()
     total = inventario.objects.exclude(id__in=cantidad.values_list('id', flat=True))
@@ -160,7 +176,7 @@ def agregar_cantxrest(request):
         messages.success(request, "Elemento guardado exitosamente.")
     return render(request, "cantidadxrestauracion/formcantxrest.html",{"total":total,"cantidad":cantidad})
 
-@login_required
+
 def dato(request):
     if request.method=="POST":
         disponible=request.POST.get("disponible")
@@ -174,7 +190,9 @@ def filtrar_disponible(request,id):
         cantidad = cantidad_x_restauracion.objects.filter(disponible=True)
     return render(request, "cantidadxrestauracion/cantidadxrestauracion.html",{"cantidad":cantidad})
 
+
 @login_required
+@user_passes_test(is_staff)
 def editar_cantidad(request,id):
     cantidad_id=cantidad_x_restauracion.objects.get(id=id)
     if request.method == "POST":
@@ -186,10 +204,11 @@ def editar_cantidad(request,id):
 
         messages.success(request, "Elemento guardado exitosamente.")
 
-    
     return render(request,"edit/editcantidad.html",{"cantidad_id":cantidad_id})
 
+
 @login_required
+@user_passes_test(is_staff)
 def eliminar_cantidad(request,id):
     cantidad=cantidad_x_restauracion.objects.filter(id=id)
     cantidad.delete()
@@ -219,14 +238,18 @@ def bitacora(request):
 
     return render(request, "bitacora/bitacora.html",{"lista":lista})
 
+
 @login_required
+@user_passes_test(is_staff)
 def reporte_ingresos(request):
     elementos=inventario.objects.all()
     unidades=tipoUnidad.objects.all()
     tipo=tipoElemento.objects.all()
     return render(request,"bitacora/reporteingresos.html",{"elementos":elementos,"unidades":unidades,"tipo":tipo})
 
+
 @login_required
+@user_passes_test(is_staff)
 @csrf_exempt  # permite POST desde fetch (recuerda csrf_token si no usas esto)
 def agregar_ingreso(request):
     if request.method == "POST":
@@ -265,6 +288,7 @@ def agregar_ingreso(request):
 
 
 @login_required
+@user_passes_test(is_staff)
 def reporte_salidas(request):
     elementos = inventario.objects.all()
     return render(
@@ -275,6 +299,7 @@ def reporte_salidas(request):
 
 
 @login_required
+@user_passes_test(is_staff)
 @csrf_exempt  # permite POST desde fetch (recuerda csrf_token si no usas esto)
 def agregar_salida(request):
     if request.method == "POST":
@@ -312,6 +337,7 @@ def agregar_salida(request):
 
 
 @login_required
+@user_passes_test(is_staff)
 def reporte_paz_y_salvo(request):
     elementos = inventario.objects.all()
     return render(
@@ -322,6 +348,7 @@ def reporte_paz_y_salvo(request):
 
 
 @login_required
+@user_passes_test(is_staff)
 @csrf_exempt  # permite POST desde fetch (recuerda csrf_token si no usas esto)
 def agregar_pazysalvo(request):
     if request.method == "POST":
@@ -359,6 +386,7 @@ def agregar_pazysalvo(request):
 
 
 @login_required
+@user_passes_test(is_staff)
 def reporte_falla(request):
     tipo=tipoElemento.objects.get(descripcion="Herramienta")
     elementos = inventario.objects.filter(tipo=tipo)
@@ -370,6 +398,7 @@ def reporte_falla(request):
 
 
 @login_required
+@user_passes_test(is_staff)
 @csrf_exempt  # permite POST desde fetch (recuerda csrf_token si no usas esto)
 def agregar_falla(request):
     if request.method == "POST":
@@ -405,7 +434,9 @@ def agregar_falla(request):
 
     return JsonResponse({"status": "error", "mensaje": "Método no permitido"})
 
+
 @login_required
+@user_passes_test(is_staff)
 def eliminar_bitacora(request,id):
     elemento=elementos_x_bitacora.objects.get(id=id)
     if elemento.lista.tipo_ingreso == "ingreso" or elemento.lista.tipo_ingreso == "paz y salvo":

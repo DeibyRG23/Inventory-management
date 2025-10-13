@@ -1,5 +1,6 @@
 {% extends 'baseinventario.html' %}
 {% block content %}
+{% if request.user.is_staff%}
 <div class="container text-center mt-4 " style="font-family: 'Handlee', cursive;">
     <div class="row">
         <div class="col">
@@ -7,7 +8,7 @@
         </div>
     </div>
 </div>
-
+{%endif%}
 <div class="container-fluid custom-width bg-secondary text-light p-4 mt-4">
     <form method="POST" action="{% url 'dato_disponible' %}">
         {% csrf_token %}
@@ -37,8 +38,10 @@
                     <th>Cantidad necesaria por restauración</th>
                     <th>¿Disponible?</th>
                     <th>¿Cuantas reparaciones se pueden realizar?</th>
+                    {% if request.user.is_staff%}
                     <th>Editar</th>
                     <th>Eliminar</th>
+                    {% endif %}
                 </tr>
             </thead>
             <tbody class="table-secondary">
@@ -52,8 +55,10 @@
                     <td>No disponible</td>
                     {% endif %}
                     <td>{{cant.restauraciones}}</td>
+                    {% if request.user.is_staff%}
                     <td class="text-center"><a  href="cantidadxrestauracion/editar/{{cant.id}}"><i class="bi bi-pencil-square"></i></a></td>
                     <td class="text-center"><a href="cantidadxrestauracion/eliminar/{{cant.id}}"><i class="bi bi-trash3 text-danger"></i></a></td>
+                    {%endif%}
                 </tr>
                 {% endfor %}
             </tbody>
